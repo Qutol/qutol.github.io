@@ -7,9 +7,7 @@ const cors = require('cors');
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
-app.use(cors({
-  origin: ['http://127.0.0.1:5500', 'http://localhost:5500'], // frontend origin
-}));
+app.use(cors());
 
 // Configure AWS
 AWS.config.update({
