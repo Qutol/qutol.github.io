@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Quotol</title>
+        <style>
+            .post-container {
+                background-color: #fff;
+                width: 50%;
+                height: min-content;
+                margin: auto;
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: center;
+                border-radius: 10px;
+                box-shadow: 0 3px 5px 1px #ddd;
+                padding: 0;
+                padding-top: 10px;
+                padding-bottom: 20px;
+            }
+            .post-wrapper {
+                width: 100%;
+            }
+            body {
+                background-color: #eee;
+                padding-top: 20px;
+                margin: 0px;
+            }
+            p {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 15px;
+            }
+            a {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 15px;
+            }
+            .post-title {
+                font-size: 18px;
+                margin: auto;
+                font-weight: 500;
+            }
+            .title-wrapper {
+                width: 100%;
+                margin-bottom: 10px;
+                margin-left: 10px;
+            }
+            .post-image-wrapper {
+                width: 100%;
+                background-color: #ddd;
+                display: flex;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+            .post-image {
+                height: 30vw;
+                width: 100%;
+                object-fit: scale-down;
+            }
+            .post-image-link {
+                display: flex;
+                justify-content: center;
+            }
+            .poster-wrapper {
+                display: flex;
+                width: 100%;
+                border-style: solid;
+                border-width: 0;
+                border-bottom-width: 2px;
+                border-color: #f3f3f3;
+                padding: 0;
+                padding-bottom: 5px;
+                margin-bottom: 10px;
+            }
+            .poster {
+                margin: 0;
+                margin-left: 10px;
+                font-weight: 600;
+            }
+            .view-text {
+                margin: 0;
+                margin-left: 5px;
+                font-weight: 600;
+                color: #3344FF;
+                text-decoration: none;
+            }
+            .interaction:hover {
+                text-shadow: #777 0 0 5px;
+                transition-duration: 50ms;
+            }
+            .interaction:active {
+                text-shadow: #555 0 0 7px;
+                transition-duration: 50ms;
+            }
+            #enlarge-wrapper {
+                position: fixed;
+                visibility: hidden;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                z-index: 999;
+                background-color: rgba(200,200,200,0.7);
+                margin: 0px;
+            }
+            #close-enlarge {
+                font-size: 50px;
+                position: fixed;
+                top: 0;
+                left: 20px;
+                text-decoration: none;
+                color: #555;
+            }
+            #enlarge {
+                width: 80%;
+                height: 80%;
+                object-fit: contain;
+            }
+            .text-button {
+                background: none;
+                border: none;
+                padding: 0;
+                cursor: pointer;
+            }
+            .interaction {
+                position: relative;
+                text-decoration: none;
+                padding-right: 20px;
+                font-size: 18px;
+                text-shadow: #ccc 0 0 5px;
+            }
+        </style>
+    </head>
+    <body id="body">
+        <div id="enlarge-wrapper">
+            <img width="70%" id="enlarge">
+            <button id="close-enlarge" class="text-button" onclick="closeEnlarge()">✕</a>
+        </div>
+        <div class="post-container">
+            <div class="post-wrapper">
+                <div class="poster-wrapper">
+                    <p class="poster">John Smith •</p>
+                    <a href="#" class="view-text">View</a>
+                </div>
+                <div class="title-wrapper">
+                    <p class="post-title">A Sunset</p>
+                </div>
+                <div class="post-image-wrapper">
+                    <button class="post-image-link text-button" onclick="enlarge(&quot;https://platform.vox.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/19397812/1048232144.jpg.jpg?quality=90&strip=all&crop=0,10.736513278159,100,78.526973443682&quot;)"><img class="post-image" src="https://platform.vox.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/19397812/1048232144.jpg.jpg?quality=90&strip=all&crop=0,10.736513278159,100,78.526973443682"></button>
+                </div>
+                <div class="interaction-container">
+                    <button onclick="func()" class="interaction text-button">👍</button>
+                    <button onclick="func()" class="interaction text-button">❓</button>
+                    <button onclick="func()" class="interaction text-button">😂</button>
+                    <button onclick="func()" class="interaction text-button">🤨</button>
+                    <button onclick="func()" class="interaction text-button">😭</button>
+                    <button onclick="func()" class="interaction text-button">😢</button>
+                </div>
+            </div>
+        </div>
+        <input id="fileInput" type="file">
+        <button onclick="uploadFile()">Upload</button>
+    </body>
+    <script>
+        async function uploadFile() {
+          const file = document.getElementById('fileInput').files[0];
+          const formData = new FormData();
+          formData.append('file', file);
+
+          const response = await fetch('http://localhost:3000/upload', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await response.json();
+          console.log('File URL:', data.url);
+          alert('File uploaded: ' + data.url);
+        }
+
+        const body = document.getElementById("body")
+        function enlarge(src) {
+            // Set enlarge source, make enlarged image visible, diable scrolling, and remove body padding
+            document.getElementById("enlarge").src = src
+            document.getElementById("enlarge-wrapper").style.visibility = "visible"
+            body.style.overflow = "hidden"
+            body.style.paddingTop = "0px"
+        }
+        function closeEnlarge() {
+            // Undo enlarge function
+            document.getElementById("enlarge").src = ""
+            document.getElementById("enlarge-wrapper").style.visibility = "hidden"
+            body.style.overflow = "visible"
+            body.style.paddingTop = "20px"
+        }
+
+        const interactions = ["👍", "❓", "😂", "🤨", "😭", "😢"]
+
+        function instanciatePost(id, username, title, image) {
+            // Create the outermost container
+            const postContainer = document.createElement("div")
+            postContainer.className = "post-container"
+
+            // Create the post-wrapper (inside post container)
+            const postWrapper = document.createElement("div")
+            postWrapper.className = "post-wrapper"
+
+            // Poster wrapper (inside post-wrapper)
+            const posterWrapper = document.createElement("div")
+            posterWrapper.className = "poster-wrapper"
+
+            // Add the poster text
+            const posterText = document.createElement("p")
+            posterText.className = "poster"
+            // Set poster text
+            posterText.innerHTML = username + " •"
+
+            // Add the view text
+            const viewText = document.createElement("a")
+            viewText.className = "view-text"
+            // Set view text
+            viewText.innerHTML = "View"
+            viewText.href = "#"
+            
+            // Add the title wrapper
+            const titleWrapper = document.createElement("div")
+            titleWrapper.className = "title-wrapper"
+
+            // Add post title
+            const postTitle = document.createElement("p")
+            postTitle.className = "post-title"
+            // Set title
+            postTitle.innerHTML = title
+
+            // Add post image wrapper
+            const postImageWrapper = document.createElement("div")
+            postImageWrapper.className = "post-image-wrapper"
+            
+            // Add the post button thing
+            const postButton = document.createElement("button")
+            postButton.className = "post-image-link text-button"
+            // Add the function to enlarge
+            postButton.onclick = function() { enlarge(image); }
+
+            // Add the actual image
+            const postImage = document.createElement("img")
+            postImage.className = "post-image"
+            postImage.src = image
+
+            // Add the interaction container
+            const interactionContainer = document.createElement("div")
+            interactionContainer.className = "interaction-container"
+
+            // Loop through interaction emojis
+            interactions.forEach((emoji) => {
+                const interactionButton = document.createElement("button")
+                interactionButton.classList = "interaction text-button"
+                interactionButton.innerHTML = emoji
+                interactionContainer.appendChild(interactionButton)
+            })
+
+            // --- Add e v e r y t h i n g ---
+            posterWrapper.appendChild(posterText)
+            posterWrapper.appendChild(viewText)
+            postWrapper.appendChild(posterWrapper)
+
+            titleWrapper.appendChild(postTitle)
+            postWrapper.appendChild(titleWrapper)
+
+            postButton.appendChild(postImage)
+            postImageWrapper.appendChild(postButton)
+            postWrapper.appendChild(postImageWrapper)
+
+            postWrapper.appendChild(interactionContainer)
+
+            postContainer.appendChild(postWrapper)
+            body.appendChild(postContainer)
+        }
+        instanciatePost(0, "Tristan Warner", "Meteor Shower", "https://scontent-hou1-1.xx.fbcdn.net/v/t39.30808-6/474752663_1156206732543696_1753631897920673615_n.jpg?stp=dst-jpg_s720x720_tt6&_nc_cat=100&ccb=1-7&_nc_sid=127cfc&_nc_ohc=Q1GvfzeZEhAQ7kNvwG7rwiI&_nc_oc=AdkM5nNqi8FxjVIbTtkuPi6hayYGkFUcgm7WdqjCZfIj6w6wtqaOluOOMZIIlSnJQv4&_nc_zt=23&_nc_ht=scontent-hou1-1.xx&_nc_gid=Fmmwhc5Fi-Cze76UC_PvmA&oh=00_AfUWnzSjUkFaNFrrqy9gKZLcxJ9vnRAQ6OuSm-upWZapSQ&oe=68A5C227")
+    </script>
+</html>
