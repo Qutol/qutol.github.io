@@ -13,8 +13,8 @@ app.use(cors({
 
 // Configure AWS
 AWS.config.update({
-  accessKeyId: "",
-  secretAccessKey: "",
+  accessKeyId: "AKIATJUPLDEH3CIPTONY",
+  secretAccessKey: "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",
   region: 'us-east-2'
 });
 
