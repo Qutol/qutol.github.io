@@ -196,6 +196,15 @@
                 margin-bottom: 10px;
             }
 
+            .poster-wrapper-nob {
+                display: flex;
+                width: 100%;
+                border: none;
+                padding: 0;
+                padding-bottom: 5px;
+                margin-top: 15px;
+            }
+
             .poster {
                 margin: 0;
                 margin-left: 10px;
@@ -289,6 +298,49 @@
                 color: #888;
                 font-size: 12px;
             }
+            .comment-container {
+                align-items: center;
+                border-style: solid;
+                border-width: 0;
+                border-top-width: 2px;
+                border-color: #f3f3f3;
+            }
+            .comment-add-container {
+                padding-top: 10px;
+                margin-top: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+            }
+            .comment-add-wrapper {
+                flex: 1;
+            }
+            .comment-add {
+                width: 90%;
+                border: none;
+                border-radius: 10px;
+                outline: solid 1px #000;
+                padding: 5px;
+                margin: auto;
+                margin-left: 15px;
+            }
+            .comment-add-button {
+                width: min-content;
+                background-color: #5555ff;
+                border-radius: 20px;
+                border: none;
+                font-size: 15px;
+                padding: 12px;
+                cursor: pointer;
+                color: #fff;
+                font-weight: 750;
+                margin-right: 15px;
+            }
+            .content-text {
+                margin: 0;
+                margin-left: 10px;
+            }
         </style>
     </head>
     <body id="body">
@@ -300,7 +352,7 @@
             <button id="close-enlarge" class="text-button" onclick="closeEnlarge()">✕</a>
         </div>
         <form action="index.html" id="some-form">
-            <button type="submit" class="text-button" onclick="console.log('huh')" id="some-button" style="padding: 10px;">HOME</button>
+            <button type="submit" class="text-button" id="some-button" style="padding: 10px;">HOME</button>
         </form>
         <div id="account-info-container">
             <div class="centered">
@@ -357,11 +409,12 @@
             // Create the outermost container
             const postContainer = document.createElement("div")
             postContainer.className = "post-container"
-            postContainer.id = id
+            postContainer.id = id + "-container"
 
             // Create the post-wrapper (inside post container)
             const postWrapper = document.createElement("div")
             postWrapper.className = "post-wrapper"
+            postWrapper.id = id
 
             // Poster wrapper (inside post-wrapper)
             const posterWrapper = document.createElement("div")
@@ -465,6 +518,19 @@
                 interactionContainer.appendChild(interactionButton)
             })
 
+            // Comments text-button wrapper
+            const commentsButtonWrapper = document.createElement("div")
+            commentsButtonWrapper.style.width = "100%"
+            commentsButtonWrapper.style.display = "flex"
+            commentsButtonWrapper.style.justifyContent = "right"
+
+            // Comments button
+            const commentsButton = document.createElement("button")
+            commentsButton.className = "text-button"
+            commentsButton.innerHTML = "Comments"
+            commentsButton.style = "font-weight: 750; font-size: 15px; color: #555; margin-right: 15px"
+            commentsButton.onclick = function() { showComments(id) }
+
             // --- Add e v e r y t h i n g ---
             posterPosterWrapper.appendChild(posterText)
             posterPosterWrapper.append(userAtText)
@@ -488,6 +554,9 @@
 
             postWrapper.appendChild(interactionContainer)
 
+            commentsButtonWrapper.appendChild(commentsButton)
+            postWrapper.appendChild(commentsButtonWrapper)
+
             postContainer.appendChild(postWrapper)
             body.appendChild(postContainer)
         }
@@ -500,7 +569,6 @@
             })
             docs.sort((a, b) => b.time - a.time)
             docs.forEach((doc) => {
-                console.log(doc)
                 instanciatePost(doc[0].poster, doc[0].title, doc[0].link, doc[0].description, doc[0].posterUsername, doc[1])
             })
         }
@@ -508,7 +576,6 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 const uid = user.uid;
-                console.log(uid)
                 document.getElementById("big-title").innerHTML = user.displayName
                 document.getElementById("name").value = user.displayName
                 setUsername(uid).then(() => {
@@ -517,7 +584,7 @@
                     document.getElementById("loading-bg").remove()
                 }).then(() => { makeQueriedPosts(username) })
             } else {
-                window.location = "C:\\Users\\Darragh Bennett\\qutol\\index.html"
+                window.location = "./index.html"
             }
         });
 
@@ -579,21 +646,141 @@
             
             document.getElementById((id + emoji).replace(/\s/g, '')).innerHTML = val[emoji]
 
-            console.log(val)
             updateDoc(postsSnap, val)
         }
         window.interact = interact
 
         function userSignOut() {
             signOut(auth)
-            window.location = "C:\\Users\\Darragh Bennett\\qutol\\index.html"
+            window.location = "./index.html"
         }
 
         async function deletePost(id) {
-            document.getElementById(id).remove()
+            document.getElementById(id+"-container").remove()
             deleteDoc(doc(db, "posts", id));
         }
 
         window.userSignOut = userSignOut
+
+        var commentOpen = undefined;
+        async function showComments(postId) {
+            if(commentOpen == postId) {
+                const commentContainerOpen = document.querySelectorAll(".comment-container")
+                commentContainerOpen.forEach((ele) => { ele.remove() })
+                commentOpen = undefined
+            } else {
+                if(commentOpen != undefined) {
+                    const commentContainerOpen = document.querySelectorAll(".comment-container")
+                    commentContainerOpen.forEach((ele) => { ele.remove() })
+                }
+
+                const commentsSnap = await getDoc(doc(db,"comments",postId))
+                var comments = []
+                try {
+                    comments = commentsSnap.data().comments
+                } catch(e) { console.log(e) }
+                const postWrapper = document.getElementById(postId)
+                const commentContainer = document.createElement("div")
+
+                comments.forEach((comment) => {
+                    const username = Object.keys(comment)[0]
+                    const name = Object.values(comment)[0][0]
+                    const content = Object.values(comment)[0][1]
+
+                    commentOpen = postId
+
+                    const newComment = document.createElement("div")
+
+                    // Poster wrapper (inside post-wrapper)
+                    const posterWrapper = document.createElement("div")
+                    posterWrapper.className = "poster-wrapper-nob"
+                    postWrapper.id = postId
+
+                    // The poster-poster-wrapper ?!?!!?
+                    const posterPosterWrapper = document.createElement("div")
+                    posterPosterWrapper.className = "poster-poster-wrapper"
+
+                    // Add the poster text
+                    const posterText = document.createElement("p")
+                    posterText.className = "poster"
+                    // Set poster text
+                    posterText.innerHTML = name + " •"
+
+                    // The user's @
+                    const userAtText = document.createElement("p")
+                    userAtText.className = "user-at"
+                    userAtText.innerHTML = "@" + username
+
+                    // Add the view text
+                    const viewText = document.createElement("a")
+                    viewText.className = "view-text"
+                    // Set view text
+                    viewText.innerHTML = "View"
+                    viewText.href = "userProfile.html?username="+username+"&name="+name
+
+                    const contentText = document.createElement("p")
+                    contentText.innerHTML = content
+                    contentText.className = "content-text"
+
+                    posterPosterWrapper.appendChild(posterText)
+                    posterPosterWrapper.append(userAtText)
+                    posterWrapper.appendChild(posterPosterWrapper)
+                    posterWrapper.appendChild(viewText)
+                    newComment.appendChild(posterWrapper)
+                    newComment.appendChild(contentText)
+                    commentContainer.appendChild(newComment)
+                })
+                commentContainer.className = "comment-container"
+
+                const commentAddContainer = document.createElement("div")
+                commentAddContainer.className = "comment-add-container"
+
+                const commentAddWrapper = document.createElement("div")
+                commentAddWrapper.className = "comment-add-wrapper"
+
+                const commentAdd = document.createElement("input")
+                commentAdd.className = "comment-add"
+                commentAdd.id = postId + "-comment-add"
+
+                const commentAddButton = document.createElement("button")
+                commentAddButton.className = "comment-add-button"
+                commentAddButton.innerHTML = "Comment"
+                commentAddButton.onclick = function() { addComment(postId) }
+
+                commentAddWrapper.appendChild(commentAdd)
+
+                commentAddContainer.appendChild(commentAddWrapper)
+                commentAddContainer.appendChild(commentAddButton)
+
+                commentContainer.appendChild(commentAddContainer)
+
+                postWrapper.appendChild(commentContainer)
+            }
+        }
+
+        async function addComment(postId) {
+            const username = document.getElementById("the-at").innerHTML.substring(1)
+            const name = document.getElementById("big-title").innerHTML
+    
+            const content = document.getElementById(postId + "-comment-add").value
+            const commentsSnap = await getDoc(doc(db,"comments",postId))
+
+            var comments = []
+
+            try {
+                comments = commentsSnap.data().comments
+            } catch(e) { console.log(e) }
+
+            var toPush = {}
+            toPush[username] = [name, content]
+            comments.push(toPush)
+
+            setDoc(doc(db, "comments", postId), {"comments": comments})
+
+            commentOpen = postId
+
+            showComments(postId).then(() => { showComments(postId) })
+        }
+        window.showComments = showComments
     </script>
 </html>

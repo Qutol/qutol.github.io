@@ -160,8 +160,7 @@
                     signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
                     .then((userCredential) => {
                         const user = userCredential.user;
-                        console.log(user)
-                        window.location = "C:\\Users\\Darragh Bennett\\qutol\\index.html"
+                        window.location = "./index.html"
                     })
                     .catch((error) => {
                         const errorCode = error.code;

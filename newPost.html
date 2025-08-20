@@ -203,16 +203,14 @@
                         userG = user
                     })()
                 } else {
-                    window.location = "C:\\Users\\Darragh Bennett\\qutol\\index.html"
+                    window.location = "./index.html"
                 }
             })
 
             async function post() {
-                console.log(username)
                 const title = document.getElementById("title-input").innerText
                 if("qwertyuiopasdfghjklzxcvbnm".split("").some(el => title.includes(el))) {
                     document.getElementById("loading-bg").style.visibility = "visible"
-                    console.log(title)
                     const file = document.getElementById('file-input').files[0];
                     let data = {url: "NONE"}
                     if(file) {
@@ -235,7 +233,7 @@
                         time: Date.now(),
                         poster: userG.displayName,
                         posterUsername: username
-                    }).then(() => { window.location = "C:\\Users\\Darragh Bennett\\qutol\\index.html" })
+                    }).then(() => { window.location = "./index.html" })
                 } else {
                     document.getElementById("title-input").style.outline = "solid 1px red"
                 }
