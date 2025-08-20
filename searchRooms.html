@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Search</title>
+        <style>
+            body {
+                background-color: #eee;
+                margin: 0px;
+            }
+
+            p {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 15px;
+            }
+
+            a {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 30px;
+                text-decoration: none;
+                color: #000;
+                font-weight: 750;
+                padding-top: 30px;
+            }
+        </style>
+    </head>
+    <body id="body">
+        <div id="links-container" style="width: 100%;"></div>
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+            import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+            import { collection, getDocs, addDoc, Timestamp, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+            import { query, orderBy, limit, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+            import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js'
+            const firebaseConfig = {
+                apiKey: "AIzaSyDgz1Q8bjUHnVZS7FP3OVlVisTy4VyEGlI",
+                authDomain: "mediasite-2c522.firebaseapp.com",
+                projectId: "mediasite-2c522",
+                storageBucket: "mediasite-2c522.firebasestorage.app",
+                messagingSenderId: "26314943690",
+                appId: "1:26314943690:web:67c0d5e5494d6c49c1d833",
+                measurementId: "G-5BR85RQZKB"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+
+            const linksContainer = document.getElementById("links-container")
+
+            const params = new URLSearchParams(window.location.search);
+            const urlQuery = params.get("query");
+
+            const querySnapshot = await getDoc(doc(db, "rooms", "rooms"));
+            const docRef = querySnapshot.data().rooms
+
+            console.log(docRef)
+
+            docRef.forEach((room) => {
+                if(room.toLowerCase().includes(urlQuery)) {
+                    const roomLink = document.createElement("a")
+                    roomLink.href = "room.html?room="+room
+                    roomLink.innerHTML = "Room: " + room
+                    const linkWrapper = document.createElement("div")
+                    linkWrapper.style = "width: 100%; display: flex; justify-content: center;"
+
+                    linkWrapper.appendChild(roomLink)
+                    linksContainer.appendChild(linkWrapper)
+                }
+            })
+        </script>
+    </body>
+</html>

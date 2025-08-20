@@ -61,7 +61,7 @@
             }
 
             .post-image {
-                height: 40vh;
+                height: 20vw;
                 width: 100%;
                 object-fit: scale-down;
             }
@@ -295,6 +295,23 @@
                 margin: 0;
                 margin-left: 10px;
             }
+            #big-title {
+                font-size: 30px;
+                font-weight: 750;
+                margin-right: 15px;
+            }
+            #join-button {
+                background-color: #5555ff;
+                border-radius: 20px;
+                border: none;
+                font-size: 15px;
+                cursor: pointer;
+                color: #fff;
+                font-weight: 750;
+                padding: 12px;
+                height: min-content;
+                margin: 0;
+            }
             .room-text {
                 font-size: 15px;
                 font-weight: 750;
@@ -307,7 +324,7 @@
             <button id="close-enlarge" class="text-button" onclick="closeEnlarge()">✕</a>
         </div>
         <div id="the-bar">
-            <button id="new-room-button" onclick="window.location = './newRoom.html'">New Room</button>
+            <button id="new-room-button">New Room</button>
             <input id="search-bar" placeholder="Search Rooms" onkeydown="search(this)">
             <form action="newPost.html" style="height: 100%; display: flex; align-items: center;" id="post-button-form">
                 <button type="submit" id="post-button">New Post</button>
@@ -316,6 +333,10 @@
                 <button type="submit" id="user-button"></button>
                 <p id="the-at"></p>
             </form>
+        </div>
+        <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 20px; height: min-content; align-items: center;">
+            <p id="big-title"></p>
+            <button id="join-button" class="text-button" onclick="join()">Join</button>
         </div>
     </body>
     <script type="module">
@@ -336,6 +357,11 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        const params = new URLSearchParams(window.location.search);
+        const room = params.get("room");
+
+        document.getElementById("big-title").innerHTML = "Room: " + room
 
         const body = document.getElementById("body")
         function enlarge(src) {
@@ -471,6 +497,12 @@
             commentsButton.style = "font-weight: 750; font-size: 15px; color: #555; margin-right: 15px"
             commentsButton.onclick = function() { showComments(id) }
 
+            // --- Add e v e r y t h i n g ---
+            posterPosterWrapper.appendChild(posterText)
+            posterPosterWrapper.append(userAtText)
+            posterWrapper.appendChild(posterPosterWrapper)
+            posterWrapper.appendChild(viewText)
+
             // Add the room it was made in
             const roomTextWrapper = document.createElement("div")
             roomTextWrapper.style = "flex: 1; display: flex; justify-content: right; padding-right: 15px;"
@@ -511,6 +543,36 @@
             body.appendChild(postContainer)
         }
 
+        async function join() {
+            const userDocRef = doc(db, "users", uid)
+            const userDocSnap = await getDoc(userDocRef)
+            var joinedRooms = userDocSnap.data().rooms
+
+            joinedRooms.push(room)
+
+            updateDoc(userDocRef, {rooms: joinedRooms})
+
+            document.getElementById("join-button").style.backgroundColor = "#888"
+            document.getElementById("join-button").innerHTML = "Leave"
+            document.getElementById("join-button").onclick = leave
+        }
+        window.join = join
+
+        async function leave() {
+            const userDocRef = doc(db, "users", uid)
+            const userDocSnap = await getDoc(userDocRef)
+            var joinedRooms = userDocSnap.data().rooms
+
+            joinedRooms.splice(joinedRooms.indexOf(room),1)
+
+            updateDoc(userDocRef, {rooms: joinedRooms})
+
+            document.getElementById("join-button").style.backgroundColor = "#5555ff"
+            document.getElementById("join-button").innerHTML = "Join"
+            document.getElementById("join-button").onclick = join
+        }
+        window.join = leave
+
         var username = "";
 
         async function setUsername(uid) {
@@ -519,16 +581,33 @@
             username = userDoc.data().username
         }
 
+        var userRooms = []
+
+        async function setUserRooms(uid) {
+            const docRef = doc(db, "users", uid)
+            const userDoc = await getDoc(docRef)
+            userRooms = userDoc.data().rooms
+        }
+
         const auth = getAuth(app);
 
         var signedIn = false
+        var uid = ""
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 signedIn = true
-                const uid = user.uid;
+                uid = user.uid;
                 document.getElementById("user-button").innerHTML = user.displayName
                 setUsername(uid).then(() => { document.getElementById("the-at").innerHTML = "@" + username })
+                setUserRooms(uid).then(() => {
+                    userRooms = userRooms
+                    if(userRooms.includes(room)) {
+                        document.getElementById("join-button").style.backgroundColor = "#888"
+                        document.getElementById("join-button").innerHTML = "Leave"
+                        document.getElementById("join-button").onclick = leave
+                    }
+                })
             } else {
                 const userButton = document.getElementById("user-button")
                 userButton.innerHTML = "Sign In"
@@ -547,7 +626,9 @@
         const docs = []
 
         querySnapshot.forEach((doc) => {
-            docs.push([doc.data(), doc.id])
+            if(doc.data().room == room) {
+                docs.push([doc.data(), doc.id])
+            }
         })
 
         docs.sort((a, b) => b[0].time - a[0].time)

@@ -33,6 +33,7 @@
                 background-color: #eee;
                 padding-top: 20px;
                 margin: 0;
+                overflow: hidden;
             }
             p {
                 font-family: Arial, Helvetica, sans-serif;
@@ -143,6 +144,11 @@
                 z-index: 999;
                 color: #888;
             }
+            select {
+                border-radius: 10px;
+                margin-left: 10px;
+                padding: 2px;
+            }
         </style>
     </head>
     <body>
@@ -153,6 +159,12 @@
             <div id="upload-wrapper">
                 <div id="form-container">
                     <span style="display: flex; justify-content: left; width: 100%;"><p id="big-title">New Post</p></span>
+                    <div style="display: flex; margin-bottom: 20px; align-items: center;">
+                        <label>Select room: </label>
+                        <select id="room-selector">
+                            <option>Select</option>
+                        </select>
+                    </div>
                     <div placeholder="Title *" class="texta" id="title-input" oninput="this.style = 'outline = &quot;solid #0055FF 1px&quot;'" contenteditable></div>
                     <div placeholder="Description" class="texta" id="description-input" placeholder="Description" contenteditable></div>
                     <span style="display: inline;"><label>Add image: </label><input type="file" id="file-input"></span>
@@ -192,6 +204,14 @@
                 return userDoc.data().username
             }
 
+            var userRooms = []
+
+            async function setUserRooms(uid) {
+                const docRef = doc(db, "users", uid)
+                const userDoc = await getDoc(docRef)
+                userRooms = userDoc.data().rooms
+            }
+
             var username = null;
             var userG = null;
 
@@ -201,7 +221,16 @@
                     (async () => {
                         username = await getUsername(uid)
                         userG = user
-                    })()
+                    })().then(() => {
+                        setUserRooms(uid).then(() => {
+                            userRooms.forEach((room) => {
+                                const newOption = document.createElement("option")
+                                newOption.value = room
+                                newOption.innerHTML = room
+                                document.getElementById("room-selector").appendChild(newOption)
+                            })
+                        })
+                    })
                 } else {
                     window.location = "./index.html"
                 }
@@ -221,7 +250,7 @@
                             method: 'POST',
                             body: formData,
                             description: document.getElementById("description-input").innerText,
-                            time: Date.now()
+                            time: Date.now(),
                         });
 
                         data = await response.json();
@@ -232,7 +261,8 @@
                         description: document.getElementById("description-input").innerText,
                         time: Date.now(),
                         poster: userG.displayName,
-                        posterUsername: username
+                        posterUsername: username,
+                        room: document.getElementById("room-selector").value
                     }).then(() => { window.location = "./index.html" })
                 } else {
                     document.getElementById("title-input").style.outline = "solid 1px red"

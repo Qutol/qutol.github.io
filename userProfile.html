@@ -174,7 +174,7 @@
             }
 
             .post-image {
-                height: 30vw;
+                height: 40vh;
                 width: 100%;
                 object-fit: scale-down;
             }
@@ -341,6 +341,10 @@
                 margin: 0;
                 margin-left: 10px;
             }
+            .room-text {
+                font-size: 15px;
+                font-weight: 750;
+            }
         </style>
     </head>
     <body id="body">
@@ -419,7 +423,7 @@
 
         const interactions = [{"Thumbs Up":"👍"}, {"Question":"❓"}, {"Laugh":"😂"}, {"Eyebrow":"🤨"}, {"Cry":"😭"}, {"Tear":"😢"}]
 
-        async function instanciatePost(name, title, image, description, username, id) {
+        async function instanciatePost(name, title, image, description, username, room, id) {
             // Create the outermost container
             const postContainer = document.createElement("div")
             postContainer.className = "post-container"
@@ -536,6 +540,24 @@
             posterPosterWrapper.append(userAtText)
             posterWrapper.appendChild(posterPosterWrapper)
             posterWrapper.appendChild(viewText)
+
+            // Add the room it was made in
+            const roomTextWrapper = document.createElement("div")
+            roomTextWrapper.style = "flex: 1; display: flex; justify-content: right; padding-right: 15px;"
+
+            const roomText = document.createElement("p")
+            roomText.innerHTML = "Room: " + room
+            roomText.className = "room-text"
+
+            // --- Add e v e r y t h i n g ---
+            posterPosterWrapper.appendChild(posterText)
+            posterPosterWrapper.append(userAtText)
+            posterWrapper.appendChild(posterPosterWrapper)
+            posterWrapper.appendChild(viewText)
+
+            roomTextWrapper.appendChild(roomText)
+            posterWrapper.appendChild(roomTextWrapper)
+
             postWrapper.appendChild(posterWrapper)
 
             titleWrapper.appendChild(postTitle)
@@ -567,7 +589,7 @@
             })
             docs.sort((a, b) => b.time - a.time)
             docs.forEach((doc) => {
-                instanciatePost(doc[0].poster, doc[0].title, doc[0].link, doc[0].description, doc[0].posterUsername, doc[1])
+                instanciatePost(doc[0].poster, doc[0].title, doc[0].link, doc[0].description, doc[0].posterUsername, doc[0].room, doc[1])
             })
         }
 
@@ -650,6 +672,8 @@
                     const commentContainerOpen = document.querySelectorAll(".comment-container")
                     commentContainerOpen.forEach((ele) => { ele.remove() })
                 }
+
+                commentOpen = postId
 
                 const commentsSnap = await getDoc(doc(db,"comments",postId))
                 var comments = []
