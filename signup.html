@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Create Post</title>
+        <style>
+            .text-button {
+                background: none;
+                border: none;
+                padding: 0;
+                cursor: pointer;
+            }
+            #signup-container {
+                background-color: #fff;
+                width: 20vw;
+                height: min-content;
+                margin: auto;
+                margin-bottom: 0;
+                display: flex;
+                justify-content: center;
+                border-radius: 10px;
+                box-shadow: 0 3px 5px 1px #ddd;
+                padding: 20px;
+                padding-right: 40px;
+            }
+            #signup-wrapper {
+                width: 100%;
+                padding: 0;
+                padding-bottom: 0;
+            }
+            body {
+                background-color: #eee;
+                padding-top: 20px;
+                margin: 0;
+            }
+            p {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 15px;
+                margin: 0;
+                margin-bottom: 5px;
+            }
+            a {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 40px;
+            }
+            input {
+                margin-bottom: 20px;
+            }
+            input[type=file] {
+                font-size: 15px;
+            }
+            input[type=file]::file-selector-button {
+                background-color: #fff;
+                border-radius: 5px;
+                border: solid #000 1px;
+                cursor: pointer;
+            }
+            #form-container {
+                display: grid;
+                place-items: center;
+            }
+            button {
+                background-color: #5555ff;
+                border-radius: 20px;
+                border: none;
+                font-size: 15px;
+                padding: 12px;
+                cursor: pointer;
+                color: #fff;
+                font-weight: 750;
+            }
+            #signup-button-container {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+            input {
+                margin: auto;
+                margin-bottom: 15px;
+                width: 15vw;
+                height: 25px;
+                padding-left: 10px;
+                border: none;
+                border-radius: 10px;
+                outline: solid #000 1px;
+            }
+            input:focus {
+                outline: solid #0055FF 1px;
+            }
+            a {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 15px;
+                text-decoration: none;
+                font-weight: 700;
+                color: #555;
+            }
+            label {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 15px;
+                margin: 0;
+                margin-bottom: 5px;
+            }
+            #big-title {
+                font-size: 25px;
+                font-weight: 750;
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="signup-container">
+            <div id="signup-wrapper">
+                <span style="display: flex; justify-content: center; width: 100%;"><p id="big-title">Sign Up</p></span>
+                <div id="form-container">
+                    <input placeholder="Email *" id="email" oninput="this.style = 'outline = &quot;solid #0055FF 1px&quot;'">
+                    <input placeholder="Username *" id="username" maxlength="50" oninput="this.style = 'outline = &quot;solid #0055FF 1px&quot;'">
+                    <input placeholder="First Name *" id="first-name" maxlength="50" oninput="this.style = 'outline = &quot;solid #0055FF 1px&quot;'">
+                    <input placeholder="Last Name" id="last-name" maxlength="50" oninput="this.style = 'outline = &quot;solid #0055FF 1px&quot;'">
+                    <input placeholder="Password *" id="password" type="password" oninput="this.style = 'outline = &quot;solid #0055FF 1px&quot;'">
+                </div>
+                <div id="signup-button-container">
+                    <button id="signup-button" onclick="signup()">Sign Up</button>
+                </div>
+            </div>
+        </div>
+        <div width="100%" style="display: flex; justify-content: center; padding: 20px; padding-bottom: 10px;"><a href="signin.html">SIGN IN</a></div>
+        <div width="100%" style="display: flex; justify-content: center; padding: 20px; padding-top: 0px;"><a href="index.html">CANCEL</a></div>
+        <script type="module">
+            import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js'
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+            import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+            import { collection, getDocs, addDoc, Timestamp, setDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+            import { query, orderBy, limit, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyDgz1Q8bjUHnVZS7FP3OVlVisTy4VyEGlI",
+                authDomain: "mediasite-2c522.firebaseapp.com",
+                projectId: "mediasite-2c522",
+                storageBucket: "mediasite-2c522.firebasestorage.app",
+                messagingSenderId: "26314943690",
+                appId: "1:26314943690:web:67c0d5e5494d6c49c1d833",
+                measurementId: "G-5BR85RQZKB"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+
+            async function signup() {
+                var invalid = false
+
+                const emailInput = document.getElementById("email")
+                if(!emailInput.value) {
+                    emailInput.style.outline = "solid red 1px"
+                    invalid = true
+                }
+
+                const usernameInput = document.getElementById("username")
+                if(!usernameInput.value) {
+                    usernameInput.style.outline = "solid red 1px"
+                    invalid = true
+                }
+
+                const firstNameInput = document.getElementById("first-name")
+                if(!firstNameInput.value) {
+                    firstNameInput.style.outline = "solid red 1px"
+                    invalid = true
+                }
+
+                const passwordInput = document.getElementById("password")
+                if(!passwordInput.value) {
+                    passwordInput.style.outline = "solid red 1px"
+                    invalid = true
+                }
+
+                const usernamesRef = await getDocs(collection(db, "users"))
+                usernamesRef.forEach((doc) => {
+                    if(usernameInput.value == doc.data().username) {
+                        usernameInput.style.outline = "solid red 1px"
+                        invalid = true
+                        alert("Username taken")
+                    }
+                })
+
+                if(!invalid) {
+                    const auth = getAuth(app);
+                    createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        updateProfile(user, {
+                            displayName: firstNameInput.value
+                        })
+                        addUsername(user)
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        console.log(errorMessage)
+                    }).then(
+                    signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        console.log(user)
+                        
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        console.log(errorMessage)
+                    }))
+                }
+            }
+            async function addUsername(user) {
+                await setDoc(doc(db, "users", user.uid), {
+                    username: document.getElementById("username").value
+                }).then(() => {
+                    window.location = "C:\\Users\\Darragh Bennett\\qutol\\index.html"
+                })
+            }
+
+            window.signup = signup
+        </script>
+    </body>
+</html>

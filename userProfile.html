@@ -3,43 +3,156 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Quotol</title>
+        <title id="title">Profile</title>
         <style>
-            .post-container {
-                background-color: #fff;
-                width: 50%;
-                height: min-content;
-                margin: auto;
-                margin-bottom: 20px;
-                display: flex;
-                justify-content: center;
-                border-radius: 10px;
-                box-shadow: 0 3px 5px 1px #ddd;
+            .text-button {
+                background: none;
+                border: none;
                 padding: 0;
-                padding-top: 10px;
-                padding-bottom: 20px;
+                cursor: pointer;
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 30px;
+                font-weight: 750;
+                color: #000;
             }
-
-            .post-wrapper {
-                width: 100%;
-            }
-
             body {
                 background-color: #eee;
-                padding-top: 100px;
-                margin: 0px;
+                padding-top: 0;
+                margin: 0;
+                overflow: hidden;
             }
-
             p {
                 font-family: Arial, Helvetica, sans-serif;
                 font-size: 15px;
+                margin: 0;
+                margin-bottom: 5px;
             }
-
+            a {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 40px;
+            }
+            input {
+                margin-bottom: 20px;
+            }
+            input[type=file] {
+                font-size: 15px;
+            }
+            input[type=file]::file-selector-button {
+                background-color: #fff;
+                border-radius: 5px;
+                border: solid #000 1px;
+                cursor: pointer;
+            }
+            #form-container {
+                display: grid;
+                place-items: center;
+            }
+            button {
+                background-color: #5555ff;
+                border-radius: 20px;
+                border: none;
+                font-size: 15px;
+                padding: 12px;
+                cursor: pointer;
+                color: #fff;
+                font-weight: 750;
+            }
+            #post-button-container {
+                width: 100%;
+                display: flex;
+                justify-content: right;
+            }
+            .texta {
+                padding-left: 10px;
+                width: 50vw;
+                overflow-wrap: normal;
+                resize: none;
+                border-radius: 10px;
+                outline: solid 1px #000;
+                min-height: none;
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 15px;
+                margin-bottom: 20px;
+                min-height: 30px;
+                padding: 10px;
+            }
+            .texta:empty::before {
+                content: attr(placeholder);
+                color: #555;
+            }
+            .texta:focus {
+                outline-color: #0055ff;
+            }
+            #title-input { 
+                align-content: center;
+                padding-bottom: 5px;
+                padding-top: 3px;
+            }
+            #description-input {
+                min-height: 100px;
+                width: 50vw;
+            }
             a {
                 font-family: Arial, Helvetica, sans-serif;
                 font-size: 15px;
+                text-decoration: none;
+                font-weight: 700;
+                color: #555;
             }
-
+            label {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 15px;
+                margin: 0;
+                margin-bottom: 5px;
+            }
+            #big-title {
+                font-size: 30px;
+                font-weight: 750;
+                margin-bottom: 0;
+            }
+            #account-info-container {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .centered {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+            #the-at {
+                font-size: 20px;
+                color: #888;
+            }
+            #loading-bg {
+                position: absolute;
+                height:101vh;
+                width:101vw;
+                top:0;
+                left:0;
+                background-color: #eee;
+                z-index: 998;
+            }
+            #loading {
+                font-size: 30px;
+                position: absolute;
+                right: 0;
+                left: 0;
+                top: 40vh;
+                text-align: center;
+                z-index: 999;
+                color: #888;
+            }
+            input {
+                border-radius: 12px;
+                border: none;
+                outline: solid #000 1px;
+                padding: 7px;
+            }
+            input:focus {
+                outline: solid #0055ff 1px
+            }
             .post-title {
                 font-size: 18px;
                 margin: auto;
@@ -97,6 +210,14 @@
                 text-decoration: none;
             }
 
+            .interaction {
+                position: relative;
+                text-decoration: none;
+                padding-right: 20px;
+                font-size: 18px;
+                text-shadow: #ccc 0 0 5px;
+            }
+
             .interaction:hover {
                 text-shadow: #777 0 0 5px;
                 transition-duration: 50ms;
@@ -105,6 +226,25 @@
             .interaction:active {
                 text-shadow: #555 0 0 7px;
                 transition-duration: 50ms;
+            }
+
+            .post-container {
+                background-color: #fff;
+                width: 50%;
+                height: min-content;
+                margin: auto;
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: center;
+                border-radius: 10px;
+                box-shadow: 0 3px 5px 1px #ddd;
+                padding: 0;
+                padding-top: 10px;
+                padding-bottom: 20px;
+            }
+
+            .post-wrapper {
+                width: 100%;
             }
 
             #enlarge-wrapper {
@@ -135,58 +275,6 @@
                 object-fit: contain;
             }
 
-            .text-button {
-                background: none;
-                border: none;
-                padding: 0;
-                cursor: pointer;
-            }
-
-            .interaction {
-                position: relative;
-                text-decoration: none;
-                padding-right: 20px;
-                font-size: 18px;
-                text-shadow: #ccc 0 0 5px;
-                text-align: center;
-            }
-
-            #the-bar {
-                background-color: #eee;
-                height: 50px;
-                width: 100%;
-                position: fixed;
-                top: 0px;
-                z-index: 998;
-                align-content: center;
-                padding: 10px;
-                box-shadow: 0 0 5px 0px;
-                display: flex;
-                justify-content: right;
-                align-content: center;
-            }
-
-            #post-button {
-                font-size: 20px;
-                background-color: #00000000;
-                border: none;
-                margin-right: 20px;
-                color: #000;
-                font-weight: 750;
-                cursor: pointer;
-            }
-
-            #user-button {
-                font-size: 20px;
-                background-color: #00000000;
-                border: none;
-                margin-right: 20px;
-                color: #000;
-                font-weight: 750;
-                cursor: pointer;
-                padding: 0;
-            }
-
             .description {
                 color: #666;
                 font-size: 17px;
@@ -195,38 +283,6 @@
                 margin-bottom: 15px;
             }
 
-            #search-bar {
-                align-self: center;
-                margin-right: auto;
-                height: 30px;
-                border-radius: 10px;
-                border: none;
-                outline: solid #000 1px;
-                width: 25%;
-                padding-left: 10px;
-            }
-
-            #parent{
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-            }
-
-            #child{
-                width: 100%;
-                height: 100%;
-                overflow-y: scroll;
-                padding-right: 17px; /* Increase/decrease this value for cross-browser compatibility */
-                box-sizing: content-box; /* So the width will be 100% + 17px */
-            }
-
-            body::-webkit-scrollbar {
-                width: 0;
-            }
-            #the-at {
-                margin: 0;
-                color: #555;
-            }
             .user-at {
                 margin: 0;
                 margin-left: 10px;
@@ -236,27 +292,43 @@
         </style>
     </head>
     <body id="body">
+        <div id="loading-bg">
+        <p id="loading"><b>LOADING...</b></p>
+        </div>
         <div id="enlarge-wrapper">
             <img width="70%" id="enlarge">
             <button id="close-enlarge" class="text-button" onclick="closeEnlarge()">✕</a>
         </div>
-        <div id="the-bar">
-            <input id="search-bar" placeholder="Search" onkeydown="search(this)">
-            <form action="newPost.html" style="height: 100%; display: flex; align-items: center;" id="post-button-form">
-                <button type="submit" id="post-button">New Post</button>
-            </form>
-            <form action="profile.html" id="suu-button" style="height: 100%; display: block; align-items: center; padding-left: 10px; padding-right: 20px;">
-                <button type="submit" id="user-button"></button>
+        <form action="index.html" id="some-form">
+            <button type="submit" class="text-button" onclick="console.log('huh')" id="some-button" style="padding: 10px;">HOME</button>
+        </form>
+        <div id="account-info-container">
+            <div class="centered">
+                <p id="big-title"></p>
+            </div>
+            <div class="centered">
                 <p id="the-at"></p>
-            </form>
+            </div>
+            <div class="centered" style="margin-top: 20px;">
+                <p style="font-size: 25px;" id="users-posts"><b>Posts<b></p>
+            </div>
         </div>
     </body>
     <script type="module">
+        const body = document.getElementById("body")
+
+        const params = new URLSearchParams(window.location.search);
+        const urlUsername = params.get("username");
+        const name = params.get("name");
+        
+        document.getElementById("users-posts").innerHTML = "<b>" + name + "'s Posts<b>"
+        document.getElementById("title").innerHTML = name + "'s Profile"
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
         import { collection, getDocs, addDoc, Timestamp, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
         import { query, orderBy, limit, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
-        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js'
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js'
         const firebaseConfig = {
             apiKey: "AIzaSyDgz1Q8bjUHnVZS7FP3OVlVisTy4VyEGlI",
             authDomain: "mediasite-2c522.firebaseapp.com",
@@ -267,28 +339,10 @@
             measurementId: "G-5BR85RQZKB"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig)
+        const db = getFirestore(app)
 
-        const body = document.getElementById("body")
-        function enlarge(src) {
-            // Set enlarge source, make enlarged image visible, diable scrolling, and remove body padding
-            document.getElementById("enlarge").src = src
-            document.getElementById("enlarge-wrapper").style.visibility = "visible"
-            body.style.overflow = "hidden"
-            body.style.paddingTop = "0px"
-        }
-
-        function closeEnlarge() {
-            // Undo enlarge function
-            document.getElementById("enlarge").src = ""
-            document.getElementById("enlarge-wrapper").style.visibility = "hidden"
-            body.style.overflow = "visible"
-            body.style.paddingTop = "100px"
-        }
-
-        window.enlarge = enlarge
-        window.closeEnlarge = closeEnlarge
+        const auth = getAuth(app)
 
         const interactions = [{"Thumbs Up":"👍"}, {"Question":"❓"}, {"Laugh":"😂"}, {"Eyebrow":"🤨"}, {"Cry":"😭"}, {"Tear":"😢"}]
 
@@ -296,6 +350,7 @@
             // Create the outermost container
             const postContainer = document.createElement("div")
             postContainer.className = "post-container"
+            postContainer.id = id
 
             // Create the post-wrapper (inside post container)
             const postWrapper = document.createElement("div")
@@ -304,7 +359,6 @@
             // Poster wrapper (inside post-wrapper)
             const posterWrapper = document.createElement("div")
             posterWrapper.className = "poster-wrapper"
-            postWrapper.id = id
 
             // The poster-poster-wrapper ?!?!!?
             const posterPosterWrapper = document.createElement("div")
@@ -326,8 +380,8 @@
             viewText.className = "view-text"
             // Set view text
             viewText.innerHTML = "View"
-            viewText.href = "userProfile.html?username="+username+"&name="+name
-            
+            viewText.href = "#"
+
             // Add the title wrapper
             const titleWrapper = document.createElement("div")
             titleWrapper.className = "title-wrapper"
@@ -365,7 +419,6 @@
             // Add the interaction container
             const interactionContainer = document.createElement("div")
             interactionContainer.className = "interaction-container"
-            interactionContainer.style.width = "fit-content"
 
             // Get interaction nums
             const interactionSnap = doc(db, "posts", id)
@@ -391,19 +444,6 @@
                 interactionContainer.appendChild(interactionButton)
             })
 
-            // Comments text-button wrapper
-            const commentsButtonWrapper = document.createElement("div")
-            commentsButtonWrapper.style.width = "100%"
-            commentsButtonWrapper.style.display = "flex"
-            commentsButtonWrapper.style.justifyContent = "right"
-
-            // Comments button
-            const commentsButton = document.createElement("button")
-            commentsButton.className = "text-button"
-            commentsButton.innerHTML = "Comments"
-            commentsButton.style = "font-weight: 750; font-size: 15px; color: #555; margin-right: 15px"
-            commentsButton.onclick = function() { showComments(id) }
-
             // --- Add e v e r y t h i n g ---
             posterPosterWrapper.appendChild(posterText)
             posterPosterWrapper.append(userAtText)
@@ -425,74 +465,47 @@
 
             postWrapper.appendChild(interactionContainer)
 
-            commentsButtonWrapper.appendChild(commentsButton)
-            postWrapper.appendChild(commentsButtonWrapper)
-
             postContainer.appendChild(postWrapper)
             body.appendChild(postContainer)
         }
 
-        var username = "";
-
-        async function setUsername(uid) {
-            const docRef = doc(db, "users", uid)
-            const userDoc = await getDoc(docRef)
-            username = userDoc.data().username
+        async function makeQueriedPosts() {
+            const querySnapshot = await getDocs(query(collection(db, "posts"), where("posterUsername", "==", urlUsername)));
+            console.log(urlUsername)
+            const docs = []
+            querySnapshot.forEach((doc) => {
+                docs.push([doc.data(), doc.id])
+            })
+            docs.sort((a, b) => b.time - a.time)
+            docs.forEach((doc) => {
+                console.log(doc)
+                instanciatePost(doc[0].poster, doc[0].title, doc[0].link, doc[0].description, doc[0].posterUsername, doc[1])
+            })
         }
 
-        const auth = getAuth(app);
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const uid = user.uid;
-                document.getElementById("user-button").innerHTML = user.displayName
-                setUsername(uid).then(() => { document.getElementById("the-at").innerHTML = "@" + username })
-            } else {
-                const userButton = document.getElementById("user-button")
-                userButton.innerHTML = "Sign In"
-                const postButton = document.getElementById("post-button")
-                postButton.style = "color: #444; cursor: not-allowed;"
-                postButton.disabled = true
-                postButton.title = "Sign in to post"
-                document.getElementById("suu-button").action = "signin.html"
-                document.getElementById("suu-button").style.display = "flex"
-                document.getElementById("suu-button").style.alignItems = "center"
-                document.getElementById("the-at").remove()
-            }
-        });
+        document.getElementById("big-title").innerHTML = name
+        document.getElementById("the-at").innerHTML = "@" + urlUsername;
+        document.getElementById("body").style.overflow = "visible";
+        document.getElementById("loading-bg").remove()
+        makeQueriedPosts()
 
-        const querySnapshot = await getDocs(collection(db, "posts"));
-        const docs = []
-
-        querySnapshot.forEach((doc) => {
-            docs.push([doc.data(), doc.id])
-        })
-
-        docs.sort((a, b) => b[0].time - a[0].time)
-        docs.forEach((doc) => {
-            instanciatePost(doc[0].poster, doc[0].title, doc[0].link, doc[0].description, doc[0].posterUsername, doc[1])
-        })
-
-        async function search(ele) {
-            if(event.key === 'Enter') { 
-                document.querySelectorAll('.post-container').forEach(e => e.remove())
-
-                const posts2 = document.getElementsByClassName("post-container")
-
-                const querySnapshot = await getDocs(collection(db, "posts"));
-                const docs = []
-                querySnapshot.forEach((doc) => {
-                    const tempData = doc.data()
-                    if(tempData.title.toLowerCase().includes(ele.value.toLowerCase())) {
-                        docs.push([tempData, doc.id])
-                    }
-                })
-                docs.sort((a, b) => b[0].time - a[0].time)
-                docs.forEach((doc) => {
-                    instanciatePost(doc[0].poster, doc[0].title, doc[0].link, doc[0].description, doc[0].posterUsername, doc[1])
-                })
-            }
+        function enlarge(src) {
+            // Set enlarge source, make enlarged image visible, diable scrolling, and remove body padding
+            document.getElementById("enlarge").src = src
+            document.getElementById("enlarge-wrapper").style.visibility = "visible"
+            body.style.overflow = "hidden"
+            body.style.paddingTop = "0px"
         }
-        window.search = search
+
+        function closeEnlarge() {
+            // Undo enlarge function
+            document.getElementById("enlarge").src = ""
+            document.getElementById("enlarge-wrapper").style.visibility = "hidden"
+            body.style.overflow = "visible"
+        }
+
+        window.enlarge = enlarge
+        window.closeEnlarge = closeEnlarge
 
         async function interact(id, emoji) {
             var postsSnap = doc(db, "posts", id)
@@ -538,12 +551,5 @@
             updateDoc(postsSnap, val)
         }
         window.interact = interact
-
-        async function showComments(postId) {
-            const postWrapper = document.getElementById(postId)
-            const commentAdd = document.createElement("input")
-            postWrapper.appendChild(commentAdd)
-        }
-        window.showComments = showComments
     </script>
 </html>
