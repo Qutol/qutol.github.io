@@ -160,7 +160,7 @@
                         var rooms = []
                     }
                     rooms.push(document.getElementById("name").value.toLowerCase())
-                    setDoc(roomsDocRef, {rooms: rooms}).then(() => { window.location ="./index.html" })
+                    setDoc(roomsDocRef, {rooms: rooms, members: 0}).then(() => { window.location ="./index.html" })
                 } else {
                     document.getElementById("name").style.outline = "solid 1px red"
                 }

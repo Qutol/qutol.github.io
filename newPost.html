@@ -238,34 +238,38 @@
 
             async function post() {
                 const title = document.getElementById("title-input").innerText
-                if("qwertyuiopasdfghjklzxcvbnm".split("").some(el => title.includes(el))) {
-                    document.getElementById("loading-bg").style.visibility = "visible"
-                    const file = document.getElementById('file-input').files[0];
-                    let data = {url: "NONE"}
-                    if(file) {
-                        const formData = new FormData();
-                        formData.append('file', file);
+                if(document.getElementById("room-selector").value != "Select") {
+                    if("qwertyuiopasdfghjklzxcvbnm".split("").some(el => title.includes(el))) {
+                        document.getElementById("loading-bg").style.visibility = "visible"
+                        const file = document.getElementById('file-input').files[0];
+                        let data = {url: "NONE"}
+                        if(file) {
+                            const formData = new FormData();
+                            formData.append('file', file);
 
-                        const response = await fetch('https://qutol.onrender.com/upload', {
-                            method: 'POST',
-                            body: formData,
+                            const response = await fetch('https://qutol.onrender.com/upload', {
+                                method: 'POST',
+                                body: formData,
+                                description: document.getElementById("description-input").innerText,
+                                time: Date.now(),
+                            });
+
+                            data = await response.json();
+                        }
+                        addDoc(collection(db, "posts"), {
+                            title: title,
+                            link: data.url,
                             description: document.getElementById("description-input").innerText,
                             time: Date.now(),
-                        });
-
-                        data = await response.json();
+                            poster: userG.displayName,
+                            posterUsername: username,
+                            room: document.getElementById("room-selector").value
+                        }).then(() => { window.location = "./index.html" })
+                    } else {
+                        document.getElementById("title-input").style.outline = "solid 1px red"
                     }
-                    addDoc(collection(db, "posts"), {
-                        title: title,
-                        link: data.url,
-                        description: document.getElementById("description-input").innerText,
-                        time: Date.now(),
-                        poster: userG.displayName,
-                        posterUsername: username,
-                        room: document.getElementById("room-selector").value
-                    }).then(() => { window.location = "./index.html" })
                 } else {
-                    document.getElementById("title-input").style.outline = "solid 1px red"
+                    document.getElementById("room-selector").style.border = "solid 1px red"
                 }
             }
 

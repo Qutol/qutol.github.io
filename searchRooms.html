@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Search</title>
+        <title>Search Results</title>
         <style>
             body {
                 background-color: #eee;
@@ -12,7 +12,7 @@
 
             p {
                 font-family: Arial, Helvetica, sans-serif;
-                font-size: 15px;
+                font-size: 20px;
             }
 
             a {
@@ -57,15 +57,32 @@
             console.log(docRef)
 
             docRef.forEach((room) => {
-                if(room.toLowerCase().includes(urlQuery)) {
+                const roomName = Object.keys(room)[0]
+                if(roomName.toLowerCase().includes(urlQuery)) {
+                    const listingContainer = document.createElement("div")
+
                     const roomLink = document.createElement("a")
-                    roomLink.href = "room.html?room="+room
-                    roomLink.innerHTML = "Room: " + room
+                    roomLink.href = "room.html?room=" + roomName
+                    roomLink.innerHTML = "Room: " + roomName
+
                     const linkWrapper = document.createElement("div")
                     linkWrapper.style = "width: 100%; display: flex; justify-content: center;"
 
+                    const descText = document.createElement("p")
+                    descText.innerHTML = room[roomName][0]
+                    descText.style = "width: 100%; text-align: center; color: #555; margin: 0px;"
+
+                    const memberText = document.createElement("p")
+                    memberText.innerHTML = "Members: " + room[roomName][1]
+                    memberText.style = "width: 100%; text-align: center; color: #555; margin: 0px;"
+
                     linkWrapper.appendChild(roomLink)
-                    linksContainer.appendChild(linkWrapper)
+                    listingContainer.appendChild(linkWrapper)
+
+                    listingContainer.appendChild(descText)
+                    listingContainer.appendChild(memberText)
+
+                    linksContainer.appendChild(listingContainer)
                 }
             })
         </script>
