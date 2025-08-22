@@ -154,7 +154,7 @@
             .interaction {
                 position: relative;
                 text-decoration: none;
-                padding-right: 20px;
+                padding-right: 2vw;
                 font-size: 18px;
                 text-shadow: #ccc 0 0 5px;
                 text-align: center;
@@ -555,6 +555,19 @@
             document.getElementById("join-button").style.backgroundColor = "#888"
             document.getElementById("join-button").innerHTML = "Leave"
             document.getElementById("join-button").onclick = leave
+
+            const roomDocRef = doc(db, "rooms", "rooms")
+            const roomDocSnap = await getDoc(roomDocRef)
+            var rooms = []
+
+            roomDocSnap.data().rooms.forEach((ele) => {
+                rooms.push(Object.keys(ele)[0])
+            })
+
+            var updatedRooms = roomDocSnap.data().rooms
+            updatedRooms[rooms.indexOf(room)][room][1] += 1
+
+            updateDoc(roomDocRef, {rooms: updatedRooms})
         }
         window.join = join
 
@@ -570,8 +583,21 @@
             document.getElementById("join-button").style.backgroundColor = "#5555ff"
             document.getElementById("join-button").innerHTML = "Join"
             document.getElementById("join-button").onclick = join
+
+            const roomDocRef = doc(db, "rooms", "rooms")
+            const roomDocSnap = await getDoc(roomDocRef)
+            var rooms = []
+
+            roomDocSnap.data().rooms.forEach((ele) => {
+                rooms.push(Object.keys(ele)[0])
+            })
+
+            var updatedRooms = roomDocSnap.data().rooms
+            updatedRooms[rooms.indexOf(room)][room][1] -= 1
+
+            updateDoc(roomDocRef, {rooms: updatedRooms})
         }
-        window.join = leave
+        window.leave = leave
 
         var username = "";
 

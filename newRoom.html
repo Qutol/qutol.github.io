@@ -107,6 +107,31 @@
                 font-weight: 750;
                 margin-bottom: 20px;
             }
+            #description-input {
+                min-height: 100px;
+                width: 15vw;
+            }
+            .texta {
+                padding-left: 10px;
+                width: 15vw;
+                overflow-wrap: normal;
+                resize: none;
+                border-radius: 10px;
+                outline: solid 1px #000;
+                min-height: none;
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 15px;
+                margin-bottom: 20px;
+                min-height: 30px;
+                padding: 10px;
+            }
+            .texta:empty::before {
+                content: attr(placeholder);
+                color: #555;
+            }
+            .texta:focus {
+                outline-color: #0055ff;
+            }
         </style>
     </head>
     <body>
@@ -115,6 +140,7 @@
                 <span style="display: flex; justify-content: center; width: 100%;"><p id="big-title">New Room</p></span>
                 <div id="form-container">
                     <input placeholder="Name" id="name" maxlength="30" oninput="this.style = 'outline = &quot;solid #0055FF 1px&quot;'">
+                    <div placeholder="Description" class="texta" id="description-input" contenteditable></div>
                 </div>
                 <div id="new-button-container">
                     <button id="new-button" onclick="newRoom()">Create</button>
@@ -159,8 +185,13 @@
                     } catch {
                         var rooms = []
                     }
-                    rooms.push(document.getElementById("name").value.toLowerCase())
-                    setDoc(roomsDocRef, {rooms: rooms, members: 0}).then(() => { window.location ="./index.html" })
+
+                    const newRoomObj = {}
+                    newRoomObj[document.getElementById("name").value.toLowerCase()] = [document.getElementById("description-input").innerHTML, 0]
+
+                    rooms.push(newRoomObj)
+
+                    setDoc(roomsDocRef, {rooms: rooms}).then(() => { window.location ="./index.html" })
                 } else {
                     document.getElementById("name").style.outline = "solid 1px red"
                 }
