@@ -346,6 +346,16 @@
                 font-size: 15px;
                 font-weight: 750;
             }
+            #logo {
+                position: fixed;
+                top: 15px;
+                left: 15px;
+                width: 150px;
+                height: 35px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
         </style>
     </head>
     <body id="body">
@@ -356,9 +366,9 @@
             <img width="70%" id="enlarge">
             <button id="close-enlarge" class="text-button" onclick="closeEnlarge()">✕</a>
         </div>
-        <form action="index.html" id="some-form">
-            <button type="submit" class="text-button" id="some-button" style="padding: 10px;">HOME</button>
-        </form>
+        <a href="index.html">
+            <img src="images/QutolLogo.png" id="logo">
+        </a>
         <div id="account-info-container">
             <div class="centered">
                 <p id="big-title"></p>

@@ -213,7 +213,8 @@
             }
             async function addUsername(user) {
                 await setDoc(doc(db, "users", user.uid), {
-                    username: document.getElementById("username").value
+                    username: document.getElementById("username").value,
+                    rooms: []
                 }).then(() => {
                     window.location = "./index.html"
                 })

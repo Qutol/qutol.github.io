@@ -86,6 +86,10 @@
                     linksContainer.appendChild(listingContainer)
                 }
             })
+
+            if(linksContainer.innerHTML == "") {
+                linksContainer.innerHTML = "<div style=\"width: 100%; display: flex; justify-content: center;\"><a>No results</a></div>"
+            }
         </script>
     </body>
 </html>
