@@ -177,7 +177,7 @@
 
                 const usernamesRef = await getDocs(collection(db, "users"))
                 usernamesRef.forEach((doc) => {
-                    if(usernameInput.value == doc.data().username) {
+                    if(usernameInput.value.toLowerCase() == doc.data().username.toLowerCase()) {
                         usernameInput.style.outline = "solid red 1px"
                         invalid = true
                         alert("Username taken")
@@ -213,7 +213,7 @@
             }
             async function addUsername(user) {
                 await setDoc(doc(db, "users", user.uid), {
-                    username: document.getElementById("username").value,
+                    username: document.getElementById("username").value.toLowerCase(),
                     rooms: []
                 }).then(() => {
                     window.location = "./index.html"
