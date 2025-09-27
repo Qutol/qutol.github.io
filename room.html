@@ -222,7 +222,7 @@
                 border-radius: 10px;
                 border: none;
                 outline: solid #000 1px;
-                width: 10%;
+                width: 20%;
                 padding-left: 10px;
             }
 
@@ -327,6 +327,14 @@
                 margin-left: auto;
                 margin-right: auto;
             }
+            @media (max-width: 1000px) {
+                #logo {
+                    width: 0;
+                }
+                #search-bar {
+                    width: 50%;
+                }
+            }
         </style>
     </head>
     <body id="body">
@@ -335,7 +343,7 @@
             <button id="close-enlarge" class="text-button" onclick="closeEnlarge()">✕</a>
         </div>
         <div id="the-bar">
-            <button id="new-room-button">New Room</button>
+            <button id="new-room-button" onclick="window.location = './newRoom.html'">New Room</button>
             <input id="search-bar" placeholder="Search Rooms" onkeydown="search(this)">
             <a href="index.html">
                 <img id="logo" src="images/QutolLogo.png">
