@@ -50,7 +50,7 @@
             const linksContainer = document.getElementById("links-container")
 
             const params = new URLSearchParams(window.location.search);
-            const urlQuery = params.get("query");
+            const urlQuery = params.get("query").toLowerCase();
 
             const querySnapshot = await getDoc(doc(db, "rooms", "rooms"));
             const docRef = querySnapshot.data().rooms
