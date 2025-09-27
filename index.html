@@ -604,8 +604,12 @@
                     }
                     val["interactors"] =  interactors
                 } else {
-                    var interactors = {}
-                    interactors[emoji]= [userAt]
+                    var interactors = data.interactors
+                    if(interactors[emoji]) {
+                        interactors[emoji].push(userAt)
+                    } else {
+                        interactors[emoji] = [userAt]
+                    }
                     val["interactors"] =  interactors  
                 }
             } else {
