@@ -79,7 +79,7 @@
             }
             .texta {
                 padding-left: 10px;
-                width: 50vw;
+                width: 95%;
                 overflow-wrap: normal;
                 resize: none;
                 border-radius: 10px;
@@ -89,7 +89,7 @@
                 font-size: 15px;
                 margin-bottom: 20px;
                 min-height: 30px;
-                padding-left: 1vw;
+                padding: 10px;
             }
             .texta:empty::before {
                 content: attr(placeholder);
@@ -105,7 +105,7 @@
             }
             #description-input {
                 min-height: 100px;
-                width: 50vw;
+                width: 95%;
             }
             a {
                 font-family: Arial, Helvetica, sans-serif;
@@ -150,6 +150,23 @@
                 margin-left: 10px;
                 padding: 2px;
             }
+            @media (max-width: 600px) {
+                #upload-container {
+                    background-color: transparent;
+                    box-shadow: none;
+                }
+                body {
+                    background-color: #fff;
+                }
+                #post-button-container {
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                }
+                #cancel {
+                    color: transparent;
+                }
+            }
         </style>
     </head>
     <body>
@@ -176,7 +193,7 @@
                 </div>
             </div>
         </div>
-        <div width="100%" style="display: flex; justify-content: center; padding: 20px;"><a href="index.html">CANCEL</a></div>
+        <div width="100%" style="display: flex; justify-content: center; padding: 20px;"><a id="cancel" href="index.html">CANCEL</a></div>
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
             import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
