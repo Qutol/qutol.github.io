@@ -418,6 +418,7 @@ a {
 #big-file {
     font-family: Arial, Helvetica, sans-serif;
     color: #aa0000;
+    font-weight: 750;
 }
 
 body::-webkit-scrollbar {
