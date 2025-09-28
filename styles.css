@@ -415,6 +415,11 @@ a {
     box-sizing: content-box; /* So the width will be 100% + 17px */
 }
 
+#big-file {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #aa0000;
+}
+
 body::-webkit-scrollbar {
     width: 0;
 }

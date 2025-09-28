@@ -49,7 +49,8 @@
                     </div>
                     <div placeholder="Title *" class="texta" id="title-input" oninput="this.style = 'outline = &quot;solid #0055FF 1px&quot;'" contenteditable></div>
                     <div placeholder="Description" class="texta" id="description-input" contenteditable></div>
-                    <span style="display: inline;"><label>Add image: </label><input type="file" id="file-input"></span>
+                    <span style="display: inline;"><label>Add file: </label><input type="file" id="file-input" onchange="checkSize()"></span>
+                    <div id="big-file"></div>
                     <br>
                     <div id="post-button-container">
                         <button onclick="post()">Post</button>
@@ -117,6 +118,17 @@
                     window.location = "./index.html"
                 }
             })
+
+            function checkSize() {
+                const file = document.getElementById('file-input').files[0];
+                const sizeMB = ((file.size)/1024)/1024
+                if(sizeMB > 5.0) {
+                    document.getElementById("big-file").innerText = "Woah, That's a big file! It might take a hot second to upload."
+                } else {
+                    document.getElementById("big-file").innerText = ""
+                }
+            }
+            window.checkSize = checkSize
 
             async function post() {
                 const title = document.getElementById("title-input").innerText
