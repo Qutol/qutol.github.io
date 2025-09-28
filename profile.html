@@ -5,346 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Your Profile</title>
         <link rel="icon" href="images/QutolFavicon.png" type="image/x-icon">
+        <link rel="stylesheet" href="styles.css">
         <style>
-            .text-button {
-                background: none;
-                border: none;
-                padding: 0;
-                cursor: pointer;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 30px;
-                font-weight: 750;
-                color: #000;
-            }
-            body {
-                background-color: #eee;
-                padding-top: 0;
-                margin: 0;
-                overflow: hidden;
-            }
-            p {
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 15px;
-                margin: 0;
-                margin-bottom: 5px;
-            }
-            a {
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 40px;
-            }
-            input {
-                margin-bottom: 20px;
-            }
-            input[type=file] {
-                font-size: 15px;
-            }
-            input[type=file]::file-selector-button {
-                background-color: #fff;
-                border-radius: 5px;
-                border: solid #000 1px;
-                cursor: pointer;
-            }
-            #form-container {
-                display: grid;
-                place-items: center;
-            }
-            button {
-                background-color: #5555ff;
-                border-radius: 20px;
-                border: none;
-                font-size: 15px;
-                padding: 12px;
-                cursor: pointer;
-                color: #fff;
-                font-weight: 750;
-            }
-            #post-button-container {
-                width: 100%;
-                display: flex;
-                justify-content: right;
-            }
-            .texta {
-                padding-left: 10px;
-                width: 50vw;
-                overflow-wrap: normal;
-                resize: none;
-                border-radius: 10px;
-                outline: solid 1px #000;
-                min-height: none;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 15px;
-                margin-bottom: 20px;
-                min-height: 30px;
-                padding: 10px;
-            }
-            .texta:empty::before {
-                content: attr(placeholder);
-                color: #555;
-            }
-            .texta:focus {
-                outline-color: #0055ff;
-            }
-            #title-input { 
-                align-content: center;
-                padding-bottom: 5px;
-                padding-top: 3px;
-            }
-            #description-input {
-                min-height: 100px;
-                width: 50vw;
-            }
-            a {
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 15px;
-                text-decoration: none;
-                font-weight: 700;
-                color: #555;
-            }
-            label {
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 15px;
-                margin: 0;
-                margin-bottom: 5px;
-            }
             #big-title {
                 font-size: 30px;
                 font-weight: 750;
-                margin-bottom: 0;
-            }
-            #account-info-container {
-                width: 100%;
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            .centered {
-                width: 100%;
-                display: flex;
-                justify-content: center;
-            }
-            #the-at {
-                font-size: 20px;
-                color: #888;
-            }
-            #loading-bg {
-                position: absolute;
-                height:101vh;
-                width:101vw;
-                top:0;
-                left:0;
-                background-color: #eee;
-                z-index: 998;
-            }
-            #loading {
-                font-size: 30px;
-                position: absolute;
-                right: 0;
-                left: 0;
-                top: 40vh;
+                margin: 0;
                 text-align: center;
-                z-index: 999;
-                color: #888;
-            }
-            input {
-                border-radius: 12px;
-                border: none;
-                outline: solid #000 1px;
-                padding: 7px;
-            }
-            input:focus {
-                outline: solid #0055ff 1px
-            }
-            .post-title {
-                font-size: 18px;
-                margin: auto;
-                font-weight: 500;
-            }
-
-            .title-wrapper {
-                width: 100%;
-                margin-bottom: 10px;
-                margin-left: 10px;
-            }
-
-            .post-image-wrapper {
-                width: 100%;
-                background-color: #ddd;
-                display: flex;
-                justify-content: center;
-                margin-bottom: 10px;
-            }
-
-            .post-image {
-                height: 40vh;
-                width: 100%;
-                object-fit: scale-down;
-            }
-
-            .post-image-link {
-                display: flex;
-                justify-content: center;
-            }
-
-            .poster-wrapper {
-                display: flex;
-                width: 100%;
-                border-style: solid;
-                border-width: 0;
-                border-bottom-width: 2px;
-                border-color: #f3f3f3;
-                padding: 0;
-                padding-bottom: 5px;
-                margin-bottom: 10px;
-            }
-
-            .poster-wrapper-nob {
-                display: flex;
-                width: 100%;
-                border: none;
-                padding: 0;
-                padding-bottom: 5px;
-                margin-top: 15px;
-            }
-
-            .poster {
-                margin: 0;
-                margin-left: 10px;
-                font-weight: 600;
-            }
-
-            .view-text {
-                margin: 0;
-                margin-left: 5px;
-                font-weight: 600;
-                color: #3344FF;
-                text-decoration: none;
-            }
-
-            .interaction {
-                position: relative;
-                text-decoration: none;
-                padding-right: 2vw;
-                font-size: 18px;
-                text-shadow: #ccc 0 0 5px;
-            }
-
-            .interaction:hover {
-                text-shadow: #777 0 0 5px;
-                transition-duration: 50ms;
-            }
-
-            .interaction:active {
-                text-shadow: #555 0 0 7px;
-                transition-duration: 50ms;
-            }
-
-            .post-container {
-                background-color: #fff;
-                width: 50%;
-                height: min-content;
-                margin: auto;
-                margin-bottom: 20px;
-                display: flex;
-                justify-content: center;
-                border-radius: 10px;
-                box-shadow: 0 3px 5px 1px #ddd;
-                padding: 0;
-                padding-top: 10px;
-                padding-bottom: 20px;
-            }
-
-            .post-wrapper {
-                width: 100%;
-            }
-
-            #enlarge-wrapper {
-                position: fixed;
-                visibility: hidden;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-                height: 100%;
-                z-index: 999;
-                background-color: rgba(200,200,200,0.7);
-                margin: 0px;
-            }
-
-            #close-enlarge {
-                font-size: 50px;
-                position: fixed;
-                top: 0;
-                left: 20px;
-                text-decoration: none;
-                color: #555;
-            }
-
-            #enlarge {
-                width: 80%;
-                height: 80%;
-                object-fit: contain;
-            }
-
-            .description {
-                color: #666;
-                font-size: 17px;
-                padding: 0px;
-                padding-left: 10px;
-                margin-bottom: 15px;
-            }
-
-            .user-at {
-                margin: 0;
-                margin-left: 10px;
-                color: #888;
-                font-size: 12px;
-            }
-            .comment-container {
-                align-items: center;
-                border-style: solid;
-                border-width: 0;
-                border-top-width: 2px;
-                border-color: #f3f3f3;
-            }
-            .comment-add-container {
-                padding-top: 10px;
-                margin-top: 10px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-            }
-            .comment-add-wrapper {
-                flex: 1;
-            }
-            .comment-add {
-                width: 90%;
-                border: none;
-                border-radius: 10px;
-                outline: solid 1px #000;
-                padding: 5px;
-                margin: auto;
-                margin-left: 15px;
-            }
-            .comment-add-button {
-                width: min-content;
-                background-color: #5555ff;
-                border-radius: 20px;
-                border: none;
-                font-size: 15px;
-                padding: 12px;
-                cursor: pointer;
-                color: #fff;
-                font-weight: 750;
-                margin-right: 15px;
-            }
-            .content-text {
-                margin: 0;
-                margin-left: 10px;
-            }
-            .room-text {
-                font-size: 15px;
-                font-weight: 750;
             }
             #logo {
                 position: fixed;
@@ -355,6 +22,9 @@
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
+            }
+            body {
+                padding: 20px;
             }
         </style>
     </head>
@@ -468,6 +138,7 @@
             deleteText.innerHTML = "🗑"
             deleteText.style.fontSize = "25px"
             deleteText.style.paddingLeft = "20px"
+            deleteText.style.height = "min-content"
             deleteText.style.color = "red"
             deleteText.onclick = function() { deletePost(id) }
 
@@ -556,7 +227,7 @@
             
             // Add the room it was made in
             const roomTextWrapper = document.createElement("div")
-            roomTextWrapper.style = "flex: 1; display: flex; justify-content: right; padding-right: 15px;"
+            roomTextWrapper.style = "flex: 1; display: flex; justify-content: right; padding-right: 15px; align-items: center"
 
             const roomText = document.createElement("p")
             roomText.innerHTML = "Room: " + room
