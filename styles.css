@@ -421,14 +421,6 @@ a {
     font-weight: 750;
 }
 
-#tiny-logo {
-    width: 30px;
-    height: 30px;
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-}
-
 body::-webkit-scrollbar {
     width: 0;
 }
@@ -501,6 +493,11 @@ body::-webkit-scrollbar {
     margin-left: auto;
     margin-right: auto;
 }
+
+#tiny-logo {
+    width: 0;
+}
+
 @media (max-width: 1000px) {
     #logo {
         width: 0;
@@ -511,5 +508,12 @@ body::-webkit-scrollbar {
     }
     .post-container {
         width: 90%;
+    }
+    #tiny-logo {
+        width: 120px;
+        height: 30px;
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
     }
 }
