@@ -366,6 +366,8 @@ a {
     color: #000;
     font-weight: 750;
     cursor: pointer;
+    height: 100%;
+    padding: 0;
 }
 
 #user-button {
@@ -388,6 +390,7 @@ a {
 }
 
 #search-bar {
+    margin: 0;
     align-self: center;
     margin-right: auto;
     height: 30px;
