@@ -421,6 +421,14 @@ a {
     font-weight: 750;
 }
 
+#tiny-logo {
+    width: 30px;
+    height: 30px;
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+}
+
 body::-webkit-scrollbar {
     width: 0;
 }
