@@ -134,7 +134,20 @@
             postButton.onclick = function() { enlarge(image); }
 
             // Add the actual image
-            const postImage = document.createElement("img")
+            var isImage = false
+            const imageExtensions = ['.gif','.jpg','.jpeg','.png']
+            imageExtensions.forEach((el) => {
+                if(image.includes(el)) {
+                    isImage = true
+                }
+            })
+            var postImage;
+            if(isImage) {
+                postImage = document.createElement("img")
+            } else {
+                postImage = document.createElement("video")
+                postImage.controls = true
+            }
             postImage.className = "post-image"
             postImage.src = image
 
