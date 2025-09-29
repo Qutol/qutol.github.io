@@ -145,7 +145,7 @@
                 const userDocSnap = await getDoc(userDocRef)
                 var joinedRooms = userDocSnap.data().rooms
 
-                joinedRooms.push(room)
+                joinedRooms.push(room.trim())
 
                 updateDoc(userDocRef, {rooms: joinedRooms})
 
@@ -174,7 +174,7 @@
                 const userDocSnap = await getDoc(userDocRef)
                 var joinedRooms = userDocSnap.data().rooms
 
-                joinedRooms.splice(joinedRooms.indexOf(room),1)
+                joinedRooms.splice(joinedRooms.indexOf(room.trim()),1)
 
                 updateDoc(userDocRef, {rooms: joinedRooms})
 

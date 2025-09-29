@@ -254,7 +254,7 @@
             const userDocSnap = await getDoc(userDocRef)
             var joinedRooms = userDocSnap.data().rooms
 
-            joinedRooms.push(room)
+            joinedRooms.push(room.trim())
 
             updateDoc(userDocRef, {rooms: joinedRooms})
 
@@ -282,7 +282,7 @@
             const userDocSnap = await getDoc(userDocRef)
             var joinedRooms = userDocSnap.data().rooms
 
-            joinedRooms.splice(joinedRooms.indexOf(room),1)
+            joinedRooms.splice(joinedRooms.indexOf(room.trim()),1)
 
             updateDoc(userDocRef, {rooms: joinedRooms})
 
@@ -358,7 +358,7 @@
         const docs = []
 
         querySnapshot.forEach((doc) => {
-            if(doc.data().room == room) {
+            if(doc.data().room.trim() == room.trim()) {
                 docs.push([doc.data(), doc.id])
             }
         })
