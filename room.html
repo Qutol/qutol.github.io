@@ -14,7 +14,7 @@
         </div>
         <div id="the-bar">
             <button id="new-room-button" onclick="window.location = './newRoom.html'">New Room</button>
-            <input id="search-bar" placeholder="Search Rooms" onkeydown="search(this)">
+            <button id="browse-rooms-button" onclick="window.location = './searchRooms.html?query='">Browse Rooms</button>
             <a href="index.html">
                 <img id="logo" src="images/QutolLogo.png">
             </a>
@@ -28,7 +28,7 @@
         </div>
         <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 20px; height: min-content; align-items: center;">
             <p id="big-title"></p>
-            <button id="join-button" class="text-button" onclick="join()">Join</button>
+            <button class="join-button" id="join-button" class="text-button" onclick="join()">Join</button>
         </div>
         <img id="tiny-logo" src="images/QutolLogo.png">
     </body>

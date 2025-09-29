@@ -5,10 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Search Results</title>
         <link rel="icon" href="images/QutolFavicon.png" type="image/x-icon">
+        <link rel="stylesheet" href="styles.css">
         <style>
             body {
                 background-color: #eee;
                 margin: 0px;
+                padding-top: 20px;
             }
 
             p {
@@ -27,6 +29,10 @@
         </style>
     </head>
     <body id="body">
+        <div style="position: fixed; top: 0px; left: 20px; font-size: 50px; cursor: pointer;" onclick="window.location='index.html'">✕</div>
+        <div style="width: 100%; display: flex; justify-content: center; align-items: center;">
+            <input id="search-bar" placeholder="Search Rooms" onkeydown="search(this)">
+        </div>
         <div id="links-container" style="width: 100%;"></div>
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -47,48 +53,146 @@
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
 
+            const auth = getAuth(app);
+
+            let rooms = null;
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    const uid = user.uid;
+                    const userDoc = await getDoc(doc(db, "users", uid))
+                    rooms = userDoc.data().rooms
+                    addRooms(true, uid)
+                } else {
+                    addRooms(false, 0)
+                }
+            })
+
             const linksContainer = document.getElementById("links-container")
 
             const params = new URLSearchParams(window.location.search);
             const urlQuery = params.get("query").toLowerCase();
 
-            const querySnapshot = await getDoc(doc(db, "rooms", "rooms"));
-            const docRef = querySnapshot.data().rooms
+            async function addRooms(hasUser, uid) {
+                const querySnapshot = await getDoc(doc(db, "rooms", "rooms"));
+                const docRef = querySnapshot.data().rooms
+                docRef.forEach((room) => {
+                    const roomName = Object.keys(room)[0]
+                    if(roomName.toLowerCase().includes(urlQuery)) {
+                        const listingContainer = document.createElement("div")
 
-            console.log(docRef)
+                        const roomLink = document.createElement("a")
+                        roomLink.href = "room.html?room=" + roomName
+                        roomLink.innerHTML = "Room: " + roomName
+                        roomLink.style.padding = "0"
 
-            docRef.forEach((room) => {
-                const roomName = Object.keys(room)[0]
-                if(roomName.toLowerCase().includes(urlQuery)) {
-                    const listingContainer = document.createElement("div")
+                        var joinButton;
 
-                    const roomLink = document.createElement("a")
-                    roomLink.href = "room.html?room=" + roomName
-                    roomLink.innerHTML = "Room: " + roomName
+                        if(hasUser) {
+                            joinButton = document.createElement("button")
+                            joinButton.className = "join-button"
+                            if(rooms.includes(Object.keys(room)[0])) {
+                                joinButton.innerText = "Leave"
+                                joinButton.style.backgroundColor = "#888"
+                                joinButton.onclick = function() {leave(Object.keys(room)[0], joinButton, uid)}
+                            } else {
+                                joinButton.innerText = "Join"
+                                joinButton.onclick = function() {join(Object.keys(room)[0], joinButton, uid)}
+                            }
+                            joinButton.style.marginLeft = "10px"
+                        }
 
-                    const linkWrapper = document.createElement("div")
-                    linkWrapper.style = "width: 100%; display: flex; justify-content: center;"
+                        const linkWrapper = document.createElement("div")
+                        linkWrapper.style = "width: 100%; display: flex; justify-content: center; align-items: center; margin-top: 30px;"
 
-                    const descText = document.createElement("p")
-                    descText.innerHTML = room[roomName][0]
-                    descText.style = "width: 100%; text-align: center; color: #555; margin: 0px;"
+                        const descText = document.createElement("p")
+                        descText.innerHTML = room[roomName][0]
+                        descText.style = "width: 100%; text-align: center; color: #555; margin: 0px;"
 
-                    const memberText = document.createElement("p")
-                    memberText.innerHTML = "Members: " + room[roomName][1]
-                    memberText.style = "width: 100%; text-align: center; color: #555; margin: 0px;"
+                        const memberText = document.createElement("p")
+                        memberText.innerHTML = "Members: " + room[roomName][1]
+                        memberText.style = "width: 100%; text-align: center; color: #555; margin: 0px;"
 
-                    linkWrapper.appendChild(roomLink)
-                    listingContainer.appendChild(linkWrapper)
+                        linkWrapper.appendChild(roomLink)
+                        if(hasUser) {
+                            linkWrapper.appendChild(joinButton)
+                        }
+                        listingContainer.appendChild(linkWrapper)
 
-                    listingContainer.appendChild(descText)
-                    listingContainer.appendChild(memberText)
+                        listingContainer.appendChild(descText)
+                        listingContainer.appendChild(memberText)
 
-                    linksContainer.appendChild(listingContainer)
+                        linksContainer.appendChild(listingContainer)
+                    }
+                })
+
+                if(linksContainer.innerHTML == "") {
+                    linksContainer.innerHTML = "<div style=\"width: 100%; display: flex; justify-content: center;\"><a>No results</a></div>"
                 }
-            })
+            }
 
-            if(linksContainer.innerHTML == "") {
-                linksContainer.innerHTML = "<div style=\"width: 100%; display: flex; justify-content: center;\"><a>No results</a></div>"
+            async function search(ele) {
+                if(event.key === 'Enter') {
+                    window.location = "./searchRooms.html?query=" + ele.value
+                }
+            }
+            window.search = search
+
+            async function join(room, button, uid) {
+                console.log(button)
+                const userDocRef = doc(db, "users", uid)
+                const userDocSnap = await getDoc(userDocRef)
+                var joinedRooms = userDocSnap.data().rooms
+
+                joinedRooms.push(room)
+
+                updateDoc(userDocRef, {rooms: joinedRooms})
+
+                button.style.backgroundColor = "#888"
+
+                
+                button.innerHTML = "Leave"
+                button.onclick = function() {leave(room, button, uid)}
+
+                const roomDocRef = doc(db, "rooms", "rooms")
+                const roomDocSnap = await getDoc(roomDocRef)
+                var rooms = []
+
+                roomDocSnap.data().rooms.forEach((ele) => {
+                    rooms.push(Object.keys(ele)[0])
+                })
+
+                var updatedRooms = roomDocSnap.data().rooms
+                updatedRooms[rooms.indexOf(room)][room][1] += 1
+
+                updateDoc(roomDocRef, {rooms: updatedRooms})
+            }
+
+            async function leave(room, button, uid) {
+                const userDocRef = doc(db, "users", uid)
+                const userDocSnap = await getDoc(userDocRef)
+                var joinedRooms = userDocSnap.data().rooms
+
+                joinedRooms.splice(joinedRooms.indexOf(room),1)
+
+                updateDoc(userDocRef, {rooms: joinedRooms})
+
+                button.style.backgroundColor = "#5555ff"
+                button.innerHTML = "Join"
+                button.onclick = function() {join(room, button, uid)}
+
+                const roomDocRef = doc(db, "rooms", "rooms")
+                const roomDocSnap = await getDoc(roomDocRef)
+                var rooms = []
+
+                roomDocSnap.data().rooms.forEach((ele) => {
+                    rooms.push(Object.keys(ele)[0])
+                })
+
+                var updatedRooms = roomDocSnap.data().rooms
+                updatedRooms[rooms.indexOf(room)][room][1] -= 1
+
+                updateDoc(roomDocRef, {rooms: updatedRooms})
             }
         </script>
     </body>

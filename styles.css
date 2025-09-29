@@ -156,7 +156,7 @@ select {
     margin-left: 10px;
     padding: 2px;
 }
-#join-button {
+.join-button {
     background-color: #5555ff;
     border-radius: 20px;
     border: none;
@@ -362,12 +362,25 @@ a {
     font-size: 20px;
     background-color: #00000000;
     border: none;
+    margin-right: 50px;
+    color: #000;
+    font-weight: 750;
+    cursor: pointer;
+    height: 100%;
+    padding: 0;
+}
+
+#browse-rooms-button {
+    font-size: 20px;
+    background-color: #00000000;
+    border: none;
     margin-right: 20px;
     color: #000;
     font-weight: 750;
     cursor: pointer;
     height: 100%;
     padding: 0;
+    margin-right: auto;
 }
 
 #user-button {
@@ -392,7 +405,6 @@ a {
 #search-bar {
     margin: 0;
     align-self: center;
-    margin-right: auto;
     height: 30px;
     border-radius: 10px;
     border: none;
