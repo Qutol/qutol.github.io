@@ -92,7 +92,7 @@
                         if(hasUser) {
                             joinButton = document.createElement("button")
                             joinButton.className = "join-button"
-                            if(rooms.includes(Object.keys(room)[0])) {
+                            if(rooms.includes(Object.keys(room)[0].trim())) {
                                 joinButton.innerText = "Leave"
                                 joinButton.style.backgroundColor = "#888"
                                 joinButton.onclick = function() {leave(Object.keys(room)[0], joinButton, uid)}
