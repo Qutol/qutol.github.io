@@ -23,9 +23,9 @@ app.post('/upload', upload.single('file'), (req, res) => {
 
   const params = {
     Bucket: 'bucketforsomemedia',
-    Key: file.originalname, // you may want to generate a unique name
+    Key: file.originalname + Math.random().toString() + ".png",
     Body: file.buffer,
-    ACL: 'public-read', // makes the file publicly accessible forever
+    ACL: 'public-read',
   };
 
   s3.upload(params, (err, data) => {
