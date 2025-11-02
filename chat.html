@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat on Qutol</title>
+    <link rel="stylesheet" href="styles.css?v=1.0">
+    <link rel="icon" href="images/QutolFavicon.png" type="image/x-icon">
+</head>
+<body style="padding:0;" id="body">
+    <div id="message-container"></div>
+
+    <form id="message-form" style="display: flex; width:calc(100%-40px); margin:20px; align-items: center;">
+        <input id="message-input" name="message" style="height:30px; width:100%; margin:0; margin-right:20px" required>
+        <button style="height: 40px;" type="submit">Send</button>
+    </form>
+
+    <div style="font-size: 0px;" id="username"></div>
+    <script type="module">
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+        import { collection, getDocs, addDoc, Timestamp, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+        import { query, orderBy, limit, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js'
+        const firebaseConfig = {
+            apiKey: "AIzaSyDgz1Q8bjUHnVZS7FP3OVlVisTy4VyEGlI",
+            authDomain: "mediasite-2c522.firebaseapp.com",
+            projectId: "mediasite-2c522",
+            storageBucket: "mediasite-2c522.firebasestorage.app",
+            messagingSenderId: "26314943690",
+            appId: "1:26314943690:web:67c0d5e5494d6c49c1d833",
+            measurementId: "G-5BR85RQZKB"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        var username = "";
+
+        async function setUsername(uid) {
+            const docRef = doc(db, "users", uid)
+            const userDoc = await getDoc(docRef)
+            username = userDoc.data().username
+            document.getElementById("username").textContent = username
+        }
+
+        const auth = getAuth(app);
+
+        var signedIn
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                signedIn = true
+                const uid = user.uid;
+                setUsername(uid)
+            } else {
+                window.location = "signin.html"
+            }
+        })
+
+        // Function to automatically scroll to the bottom of the chat
+        async function scrollToBottom() {
+            await sleep(100)
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        const messageContainer = document.getElementById("message-container");
+
+        // Function to display a message in the container
+        function instanciateMessage(text) {
+            const message = document.createElement("div");
+            message.textContent = text;
+            message.className = "message";
+
+            messageContainer.appendChild(message);
+        }
+
+        // Fetch initial messages from the server (GET request)
+        const url = 'http://mc.darraghbennett.com:50000/get';
+
+        async function fetchData() {
+            while(true) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Data received:', data);
+                        messageContainer.replaceChildren()
+                        data[0].messages.forEach(message => {
+                            instanciateMessage(message);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
+                await sleep(500)
+            }
+        }
+
+        fetchData()
+
+        // Handle form submission (POST request)
+        const form = document.getElementById('message-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            const messageInput = document.getElementById('message-input');
+            var messageText = messageInput.value.trim();
+
+            if (messageText === '') {
+                return; // Don't send empty messages
+            }
+
+            messageText = document.getElementById("username").textContent + ": " + messageText
+
+            // Prepare the POST request
+            const postUrl = 'http://mc.darraghbennett.com:50000/post';
+            const data = { message: messageText };
+            console.log(data)
+            fetch(postUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data), // Send the data as JSON
+            })
+            .then(response => response.text()) // First get the raw text response
+            .then(responseText => {
+                console.log('Raw Response Text:', responseText); // Log the raw response
+
+                try {
+                    const jsonData = JSON.parse(responseText); // Try parsing as JSON
+                    console.log('Parsed JSON:', jsonData); // Log the parsed JSON
+                    instanciateMessage(jsonData.message); // Display the sent message
+                    messageInput.value = ''; // Clear the input field
+                    scrollToBottom(); // Scroll to the bottom of the chat
+                } catch (error) {
+                    console.error('Error parsing response as JSON:', error);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending message:', error);
+            });
+
+        });
+
+        scrollToBottom()
+    </script>
+</body>
+</html>
