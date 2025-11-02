@@ -113,8 +113,13 @@
                     instanciateMessage(jsonData.message); // Display the sent message
                     document.getElementById("typer-container").replaceChildren()
                     const typerDiv = document.createElement("div")
-                    if(jsonData.typers.length != 0) {
-                        typerDiv.textContent = "Typing: " + jsonData.typers.join(", ")
+                    var typersArray = jsonData.typers
+                    const index = typersArray.indexOf(username);
+                    if (index > -1) {
+                        typersArray.splice(index, 1);
+                    }
+                    if(typersArray.length != 0) {
+                        typerDiv.textContent = "Typing: " + typersArray.join(", ")
                     }
                     typerDiv.id = "typer-div"
                     document.getElementById("typer-container").appendChild(typerDiv)
