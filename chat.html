@@ -79,7 +79,7 @@
         }
 
         // Fetch initial messages from the server (GET request)
-        const url = 'http://mc.darraghbennett.com:50000/get';
+        const url = 'https://mc.darraghbennett.com:50000/get';
 
         async function fetchData() {
             while(true) {
@@ -121,7 +121,7 @@
             messageText = document.getElementById("username").textContent + ": " + messageText
 
             // Prepare the POST request
-            const postUrl = 'http://mc.darraghbennett.com:50000/post';
+            const postUrl = 'https://mc.darraghbennett.com:50000/post';
             const data = { message: messageText };
             console.log(data)
             fetch(postUrl, {
