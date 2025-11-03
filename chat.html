@@ -7,7 +7,22 @@
     <link rel="stylesheet" href="styles.css?v=1.1">
     <link rel="icon" href="images/QutolFavicon.png" type="image/x-icon">
 </head>
-<body style="padding:0;" id="body">
+<body id="body">
+    <div id="the-bar">
+        <button id="new-room-button" onclick="window.location = './newRoom.html'">New Room</button>
+        <button id="browse-rooms-button" onclick="window.location = './searchRooms.html?query='">Browse Rooms</button>
+        <a href="index.html">
+            <img id="logo" src="images/QutolLogo.png">
+        </a>
+        <form action="newPost.html" style="height: 100%; display: flex; align-items: center;" id="post-button-form">
+            <button type="submit" id="post-button">New Post</button>
+        </form>
+        <form action="profile.html" id="suu-button" style="height: 100%; display: block; align-items: center; padding-left: 10px; padding-right: 20px;">
+            <button type="submit" id="user-button"></button>
+            <p id="the-at"></p>
+        </form>
+    </div>
+
     <div id="message-container"></div>
 
     <form id="message-form" style="display: flex; width:calc(100%-40px); margin:20px; align-items: center;">
@@ -56,7 +71,8 @@
             if (user) {
                 signedIn = true
                 const uid = user.uid;
-                setUsername(uid)
+                document.getElementById("user-button").innerHTML = user.displayName
+                setUsername(uid).then(() => { document.getElementById("the-at").innerHTML = "@" + username })
             } else {
                 window.location = "signin.html"
             }
